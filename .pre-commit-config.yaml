@@ -1,0 +1,31 @@
+# Hooks run on every `git commit`. Run on all files with: pre-commit run --all-files
+# Versions are pinned to commit SHAs (supply-chain safety); the tag is in the comment.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # frozen: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents] # Kubernetes manifests often hold several documents
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      - id: detect-private-key
+
+  # Secret scanning: blocks commits that contain API keys, tokens or passwords
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e # frozen: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # Python linting and formatting
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 44b5042edab9382aba712eed4f9c7bab7a3d6a3e # frozen: v0.17.0
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
